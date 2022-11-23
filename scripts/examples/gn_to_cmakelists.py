@@ -73,7 +73,14 @@ def CMakeTargetEscape(a):
             return c
         else:
             return '__'
-    return ''.join(map(Escape, a))
+    target_name = ''.join(map(Escape, a))
+
+    # a target name usually has the format like "target-%s-Debug-22767ea9a4f93f6583e5.json"
+    if len(target_name) >= 255-39:
+        trimmed = target_name[:255-40]
+        print("Target name %s is too long for CMake. Trimming it by 40 characters resulting in %s" % (target_name, trimmed))
+        return trimmed
+    return target_name
 
 
 def RemoveByPrefix(l, prefixs):
